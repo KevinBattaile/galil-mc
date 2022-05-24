@@ -1,0 +1,27 @@
+# Motor record positions
+# Real motors
+
+# Omega
+XF:19IDC-ES{Gon:1-Ax:O}Mtr.DVAL
+
+# Sample Vert
+XF:19IDC-ES{Gon:1-Ax:V}Mtr.DVAL
+
+# Optic Vert
+XF:19IDC-ES{Opt:1-Ax:V}Mtr.DVAL
+
+# Global X
+XF:19IDC-ES{Glb:1-Ax:X}Mtr.DVAL
+
+# Sample X
+XF:19IDC-ES{Gon:1-Ax:X}Mtr.DVAL
+
+# Sample Y
+XF:19IDC-ES{Gon:1-Ax:Y}Mtr.DVAL
+
+# Sample Z
+XF:19IDC-ES{Gon:1-Ax:Z}Mtr.DVAL
+
+# Kappa
+XF:19IDC-ES{Gon:1-Ax:K}Mtr.DVAL
+

@@ -1,0 +1,505 @@
+'
+'  NYX Galil 2
+'
+'
+#AUTO
+'
+' Vector scanning variables
+'
+' Status variables
+VState=0;       ' [OUT] Vector state (IDLE, BACKUP, HOLDING, ACQUIRING)
+VRunning=0;     ' [OUT] Vector is running
+VError=0;       ' [OUT] Vector error (None, Aborted, Zero Exposure,
+'                                     Too Fast, Zero Shutter,
+'                                     Too Slow)
+'
+' Commands
+VGo=0;          ' [IN] Start vector
+VProceed=0;     ' [IN] Proceed paused motion
+VAbort=0;       ' [IN] Abort motion
+'
+' Parameters
+VExpose=0;      ' [IN] Should expose? 1=expose, 0=don't
+VHold=0;        ' [IN] Should wait for proceed? 1=yes
+VClcOnly=0;     ' [IN] Should only calculate positions? 1=yes
+'
+VNumSamp=0;     ' [IN] Number of samples
+VExp=0;         ' [IN] Exposure per sample (ms)
+VDaqDur=0;      ' [OUT] Data acquisition duration (ms)
+'
+VShtOPos=0;     ' [IN] Shutter open position (cts) (for galvo)
+VShtCPos=0;     ' [IN] Shutter closed position (cts) (for galvo)
+VShtOTim=0;     ' [IN] Shutter opening/closing time (ms)
+VShtLTim=0;     ' [IN] Shutter lag time (ms)
+VBufTime=0;     ' [IN] "Buffer" motion time (ms)
+VMxTToSp=0;     ' [OUT] Max time necessary to reach desired speed (ms)
+VTotTime=0;     ' [OUT] Total time to execute entire vector (ms)
+'
+' Arrays
+DM VStart[4];   ' [IN] Starting positions (ct)
+DM VEnd[4];     ' [IN] Ending positions (ct)
+DM VTooFast[4]; ' [OUT] Motors that are too fast (1 or 0)
+DM VAccel[4];   ' [OUT] Calc. accelerations (ct/ms^2)
+DM VSaveAcc[4]; ' [OUT] Saved accelerations (ct/ms^2)
+DM VDaqDist[4]; ' [OUT] Calc. data acquisition distances (ct)
+DM VDesSpd[4];  ' [OUT] Calc. desired speeds (ct/ms)
+DM VSaveSpd[4]; ' [OUT] Saved speeds (ct/ms)
+DM VTimToSp[4]; ' [OUT] Calc. times to speed (ms)
+DM VDir[4];     ' [OUT] Calc. motion directions (1 or -1)
+DM VSpUpDst[4]; ' [OUT] Calc. speed up distances (ct)
+DM VBufDst[4];  ' [OUT] Calc. buffer distances (ct)
+DM VShtODst[4]; ' [OUT] Calc. dists during shutter opening (ct)
+DM VShtLDst[4]; ' [OUT] Calc. dists during shutter lag (ct)
+DM VBkUpDst[4]; ' [OUT] Calc. backup distances (ct)
+DM VTotDist[4]; ' [OUT] Calc. total distances (ct)
+'
+' Data Capture
+VCaptItv=0;       ' [OUT] Data Capture interval (ms / point)
+VCaptRc=0;        ' [OUT] Data Capture interval (for the RC command)
+'
+' Data Capture arrays
+DA VCaptM0[0],VCaptM1[0],VCaptM2[0],VCaptM3[0];
+DM VCaptM0[4000]; ' [OUT] Captured data for motor 1
+DM VCaptM1[4000]; ' [OUT] Captured data for motor 2
+DM VCaptM2[4000]; ' [OUT] Captured data for motor 3
+DM VCaptM3[4000]; ' [OUT] Captured data for motor 4
+'
+'
+' === Custom motor configuration
+'
+MOA
+MT 1,2.5,2.5,2,2,2,2.5,2.5
+LC 0,0,0,0,1,1,0,0
+CEA=0
+ITA=0.1
+CN1,1
+ER-1
+'set speed of phi homing
+HVA=40000
+BR0
+' set initial speeds for Omega, X, Y and Z
+' Omega: 10 deg/sec @ 10,000 cts/deg
+SPA=100000
+' Sample X and Sample Y: 10 mm/sec @ 12,800 cts/mm
+SPE=128000
+SPF=128000
+' Sample Z: 10 mm/sec @ 20151 cts/mm
+SPG=201510
+SH
+'
+' === IOC-generated routines
+'
+' Note: we combine THREADG and THREADH to be run by
+' a single thread, 6, so #VEC can be run by thread 7.
+' The trade-off is that Motor F and Motor G cannot be
+' homed at the same time.
+XQ #THREADB,1
+XQ #THREADC,2
+XQ #THREADD,3
+XQ #THREADE,4
+XQ #THREADF,5
+XQ #THREADG,6
+'XQ #THREADH,7
+XQ #VEC,7
+#THREADA
+IF(homeA=1)
+IF((((_LRA=0)&(hjsA>0))|((_LFA=0)&(hjsA<0)))&(hjogA=0))
+IF((((_LRA=1)|(_LDA>1))&(hjsA<0))|(((_LFA=1)|(_LDA=1)|(_LDA=3))&(hjsA>0)))
+IF((_MOA=0)&(_BGA=0));JGA=hjsA;WT10;BGA;hjogA=1;ENDIF;ENDIF;ENDIF
+IF((((_LRA=1)&(hjsA>0))|((_LFA=1)&(hjsA<0)))&(hjogA=1)&(_BGA=1));STA;ENDIF
+IF((hjogA=1)&(_BGA=0))
+IF((((_LRA=1)|(_LDA>1))&(hjsA<0))|(((_LFA=1)|(_LDA=1)|(_LDA=3))&(hjsA>0)))
+IF((_MOA=0)&(ueipA=1)&(uiA=1));JGA=hjsA;FIA;WT10;BGA;hjogA=2
+ELSE
+IF(_MOA=0);hjogA=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogA=2)&(_BGA=0));hjogA=3;ENDIF
+IF((((_LRA=1)|(_LDA>1))|((_LFA=1)|(_LDA=1)|(_LDA=3)))&(hjogA=3)&(_BGA=0))
+WT10;hjogA=0;homeA=0;homedA=1;MG "homedA",homedA;ENDIF;ENDIF
+IF(mlock=1);II ,,dpon,dvalues;ENDIF
+JP #THREADA
+#THREADB
+IF(homeB=1)
+IF((((_LRB=0)&(hjsB>0))|((_LFB=0)&(hjsB<0)))&(hjogB=0))
+IF((((_LRB=1)|(_LDB>1))&(hjsB<0))|(((_LFB=1)|(_LDB=1)|(_LDB=3))&(hjsB>0)))
+IF((_MOB=0)&(_BGB=0));JGB=hjsB;WT10;BGB;hjogB=1;ENDIF;ENDIF;ENDIF
+IF((((_LRB=1)&(hjsB>0))|((_LFB=1)&(hjsB<0)))&(hjogB=1)&(_BGB=1));STB;ENDIF
+IF((hjogB=1)&(_BGB=0))
+IF((((_LRB=1)|(_LDB>1))&(hjsB<0))|(((_LFB=1)|(_LDB=1)|(_LDB=3))&(hjsB>0)))
+IF((_MOB=0)&(ueipB=1)&(uiB=1));JGB=hjsB;FIB;WT10;BGB;hjogB=2
+ELSE
+IF(_MOB=0);hjogB=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogB=2)&(_BGB=0));hjogB=3;ENDIF
+IF((((_LRB=1)|(_LDB>1))|((_LFB=1)|(_LDB=1)|(_LDB=3)))&(hjogB=3)&(_BGB=0))
+WT10;hjogB=0;homeB=0;homedB=1;MG "homedB",homedB;ENDIF;ENDIF
+JP #THREADB
+#THREADC
+IF(homeC=1)
+IF((((_LRC=0)&(hjsC>0))|((_LFC=0)&(hjsC<0)))&(hjogC=0))
+IF((((_LRC=1)|(_LDC>1))&(hjsC<0))|(((_LFC=1)|(_LDC=1)|(_LDC=3))&(hjsC>0)))
+IF((_MOC=0)&(_BGC=0));JGC=hjsC;WT10;BGC;hjogC=1;ENDIF;ENDIF;ENDIF
+IF((((_LRC=1)&(hjsC>0))|((_LFC=1)&(hjsC<0)))&(hjogC=1)&(_BGC=1));STC;ENDIF
+IF((hjogC=1)&(_BGC=0))
+IF((((_LRC=1)|(_LDC>1))&(hjsC<0))|(((_LFC=1)|(_LDC=1)|(_LDC=3))&(hjsC>0)))
+IF((_MOC=0)&(ueipC=1)&(uiC=1));JGC=hjsC;FIC;WT10;BGC;hjogC=2
+ELSE
+IF(_MOC=0);hjogC=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogC=2)&(_BGC=0));hjogC=3;ENDIF
+IF((((_LRC=1)|(_LDC>1))|((_LFC=1)|(_LDC=1)|(_LDC=3)))&(hjogC=3)&(_BGC=0))
+WT10;hjogC=0;homeC=0;homedC=1;MG "homedC",homedC;ENDIF;ENDIF
+JP #THREADC
+#THREADD
+IF(homeD=1)
+IF((((_LRD=0)&(hjsD>0))|((_LFD=0)&(hjsD<0)))&(hjogD=0))
+IF((((_LRD=1)|(_LDD>1))&(hjsD<0))|(((_LFD=1)|(_LDD=1)|(_LDD=3))&(hjsD>0)))
+IF((_MOD=0)&(_BGD=0));JGD=hjsD;WT10;BGD;hjogD=1;ENDIF;ENDIF;ENDIF
+IF((((_LRD=1)&(hjsD>0))|((_LFD=1)&(hjsD<0)))&(hjogD=1)&(_BGD=1));STD;ENDIF
+IF((hjogD=1)&(_BGD=0))
+IF((((_LRD=1)|(_LDD>1))&(hjsD<0))|(((_LFD=1)|(_LDD=1)|(_LDD=3))&(hjsD>0)))
+IF((_MOD=0)&(ueipD=1)&(uiD=1));JGD=hjsD;FID;WT10;BGD;hjogD=2
+ELSE
+IF(_MOD=0);hjogD=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogD=2)&(_BGD=0));hjogD=3;ENDIF
+IF((((_LRD=1)|(_LDD>1))|((_LFD=1)|(_LDD=1)|(_LDD=3)))&(hjogD=3)&(_BGD=0))
+WT10;hjogD=0;homeD=0;homedD=1;MG "homedD",homedD;ENDIF;ENDIF
+JP #THREADD
+#THREADE
+IF(homeE=1)
+IF((_HME=hswactE)&(hjogE=0)&(_BGE=1));STE;DCE=limdcE;ENDIF
+IF((_HME=hswactE)&(hjogE=0))
+IF((((_LRE=1)|(_LDE>1))&(hjsE<0))|(((_LFE=1)|(_LDE=1)|(_LDE=3))&(hjsE>0)))
+IF((_BGE=0)&(_MOE=0));JGE=hjsE;WT10;BGE;hjogE=1;ENDIF;ENDIF;ENDIF
+IF((_HME=hswiactE)&(hjogE=1)&(_BGE=1));STE;ENDIF
+IF((hjogE=1)&(_BGE=0))
+IF((((_LRE=1)|(_LDE>1))&(hjsE<0))|(((_LFE=1)|(_LDE=1)|(_LDE=3))&(hjsE>0)))
+IF((_MOE=0)&(ueipE=1)&(uiE=1));JGE=hjsE;FIE;WT10;BGE;hjogE=2
+ELSE
+IF(_MOE=0);hjogE=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogE=2)&(_BGE=0));hjogE=3;ENDIF
+IF((((_LRE=1)|(_LDE>1))|((_LFE=1)|(_LDE=1)|(_LDE=3)))&(hjogE=3)&(_BGE=0))
+WT10;hjogE=0;homeE=0;homedE=1;MG "homedE",homedE;ENDIF;ENDIF
+JP #THREADE
+#THREADF
+IF(homeF=1)
+IF((_HMF=hswactF)&(hjogF=0)&(_BGF=1));STF;DCF=limdcF;ENDIF
+IF((_HMF=hswactF)&(hjogF=0))
+IF((((_LRF=1)|(_LDF>1))&(hjsF<0))|(((_LFF=1)|(_LDF=1)|(_LDF=3))&(hjsF>0)))
+IF((_BGF=0)&(_MOF=0));JGF=hjsF;WT10;BGF;hjogF=1;ENDIF;ENDIF;ENDIF
+IF((_HMF=hswiactF)&(hjogF=1)&(_BGF=1));STF;ENDIF
+IF((hjogF=1)&(_BGF=0))
+IF((((_LRF=1)|(_LDF>1))&(hjsF<0))|(((_LFF=1)|(_LDF=1)|(_LDF=3))&(hjsF>0)))
+IF((_MOF=0)&(ueipF=1)&(uiF=1));JGF=hjsF;FIF;WT10;BGF;hjogF=2
+ELSE
+IF(_MOF=0);hjogF=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogF=2)&(_BGF=0));hjogF=3;ENDIF
+IF((((_LRF=1)|(_LDF>1))|((_LFF=1)|(_LDF=1)|(_LDF=3)))&(hjogF=3)&(_BGF=0))
+WT10;hjogF=0;homeF=0;homedF=1;MG "homedF",homedF;ENDIF;ENDIF
+JP #THREADF
+#THREADG
+IF(homeG=1)
+IF((_HMG=hswactG)&(hjogG=0)&(_BGG=1));STG;DCG=limdcG;ENDIF
+IF((_HMG=hswactG)&(hjogG=0))
+IF((((_LRG=1)|(_LDG>1))&(hjsG<0))|(((_LFG=1)|(_LDG=1)|(_LDG=3))&(hjsG>0)))
+IF((_BGG=0)&(_MOG=0));JGG=hjsG;WT10;BGG;hjogG=1;ENDIF;ENDIF;ENDIF
+IF((_HMG=hswiactG)&(hjogG=1)&(_BGG=1));STG;ENDIF
+IF((hjogG=1)&(_BGG=0))
+IF((((_LRG=1)|(_LDG>1))&(hjsG<0))|(((_LFG=1)|(_LDG=1)|(_LDG=3))&(hjsG>0)))
+IF((_MOG=0)&(ueipG=1)&(uiG=1));JGG=hjsG;FIG;WT10;BGG;hjogG=2
+ELSE
+IF(_MOG=0);hjogG=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogG=2)&(_BGG=0));hjogG=3;ENDIF
+IF((((_LRG=1)|(_LDG>1))|((_LFG=1)|(_LDG=1)|(_LDG=3)))&(hjogG=3)&(_BGG=0))
+WT10;hjogG=0;homeG=0;homedG=1;MG "homedG",homedG;ENDIF;ENDIF
+'JP #THREADG
+'#THREADH
+IF(homeH=1)
+IF((((_LRH=0)&(hjsH>0))|((_LFH=0)&(hjsH<0)))&(hjogH=0))
+IF((((_LRH=1)|(_LDH>1))&(hjsH<0))|(((_LFH=1)|(_LDH=1)|(_LDH=3))&(hjsH>0)))
+IF((_MOH=0)&(_BGH=0));JGH=hjsH;WT10;BGH;hjogH=1;ENDIF;ENDIF;ENDIF
+IF((((_LRH=1)&(hjsH>0))|((_LFH=1)&(hjsH<0)))&(hjogH=1)&(_BGH=1));STH;ENDIF
+IF((hjogH=1)&(_BGH=0))
+IF((((_LRH=1)|(_LDH>1))&(hjsH<0))|(((_LFH=1)|(_LDH=1)|(_LDH=3))&(hjsH>0)))
+IF((_MOH=0)&(ueipH=1)&(uiH=1));JGH=hjsH;FIH;WT10;BGH;hjogH=2
+ELSE
+IF(_MOH=0);hjogH=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogH=2)&(_BGH=0));hjogH=3;ENDIF
+IF((((_LRH=1)|(_LDH>1))|((_LFH=1)|(_LDH=1)|(_LDH=3)))&(hjogH=3)&(_BGH=0))
+WT10;hjogH=0;homeH=0;homedH=1;MG "homedH",homedH;ENDIF;ENDIF
+'JP #THREADH
+JP #THREADG
+#CMDERR
+errstr=_ED;errcde=_TC;cmderr=cmderr+1
+EN1
+#TCPERR
+tcpcde=_TC;tcperr=tcperr+1
+RE1
+#LIMSWI
+IF(((_SCA=2)|(_SCA=3))&(_BGA=1))
+DCA=limdcA;VDS=limdcA;VDT=limdcA;ENDIF
+IF(((_SCB=2)|(_SCB=3))&(_BGB=1))
+DCB=limdcB;VDS=limdcB;VDT=limdcB;ENDIF
+IF(((_SCC=2)|(_SCC=3))&(_BGC=1))
+DCC=limdcC;VDS=limdcC;VDT=limdcC;ENDIF
+IF(((_SCD=2)|(_SCD=3))&(_BGD=1))
+DCD=limdcD;VDS=limdcD;VDT=limdcD;ENDIF
+IF(((_SCE=2)|(_SCE=3))&(_BGE=1))
+DCE=limdcE;VDS=limdcE;VDT=limdcE
+homeE=0;MG "homeE",homeE;ENDIF
+IF(((_SCF=2)|(_SCF=3))&(_BGF=1))
+DCF=limdcF;VDS=limdcF;VDT=limdcF
+homeF=0;MG "homeF",homeF;ENDIF
+IF(((_SCG=2)|(_SCG=3))&(_BGG=1))
+DCG=limdcG;VDS=limdcG;VDT=limdcG
+homeG=0;MG "homeG",homeG;ENDIF
+IF(((_SCH=2)|(_SCH=3))&(_BGH=1))
+DCH=limdcH;VDS=limdcH;VDT=limdcH;ENDIF
+RE 1
+EN
+'
+' Vector Scanning
+'
+' Hard-coded assumptions:
+'   Output bit DO13: Shutter [if non-galvo]
+'
+' VECCALC: Subroutine to calculate Vector variables
+' Arguments on the stack:
+'   ^a: axis number
+'   ^b: axis index into arrays
+#VECCALC
+~h=^a;                              ' Set axis variable
+VDaqDist[^b]=VEnd[^b]-VStart[^b];   ' Data acq distance (ct)
+VAccel[^b]=_AC~h/1000000;           ' Axis acceleration (ct/ms^2)
+VDesSpd[^b]=VDaqDist[^b]/VDaqDur;   ' Desired speed (ct/ms)
+'
+' Check if this axis is too fast
+IF(@ABS[VDesSpd[^b]]>(_SP~h/1000));
+  VTooFast[^b]=1;
+  MG "Desired ",VDesSpd[^b]," ct/ms, Max ",(_SP~h/1000)," ct/ms";
+ELSE;
+  VTooFast[^b]=0;
+ENDIF;
+'
+' Time to reach desired speed (ms)
+VTimToSp[^b]=@ABS[VDesSpd[^b]]/VAccel[^b];
+'
+' Keep track of maximum time to speed for all axes
+IF(VTimToSp[^b]>VMxTToSp);
+  VMxTToSp=VTimToSp[^b];
+ENDIF;
+'
+' Determine motion direction
+IF(VStart[^b]>VEnd[^b]);
+  VDir[^b]=-1;
+ELSE;
+  VDir[^b]=1;
+ENDIF;
+'
+' Speed up distance (ct)
+VSpUpDst[^b]=VDir[^b]*VAccel[^b]*VTimToSp[^b]*VTimToSp[^b]/2;
+'
+VBufDst[^b]=VDesSpd[^b]*VBufTime;   ' Buffer distance (ct)
+VShtODst[^b]=VDesSpd[^b]*VShtOTim;  ' Shutter opening distance (ct)
+VShtLDst[^b]=VDesSpd[^b]*VShtLTim;  ' Shutter lag distance (ct)
+'
+' Total backup (ct)
+VBkUpDst[^b]=VSpUpDst[^b]+VBufDst[^b]+VShtODst[^b]+VShtLDst[^b];
+'
+' Total distance (ct)
+VTotDist[^b]=VBkUpDst[^b]+VDaqDist[^b]+VShtODst[^b]+VSpUpDst[^b];
+EN
+'
+' Subroutine to run the vector scan
+#VEC
+' Motor map
+VMtr1=0;        ' 1st motor: A -> Omega
+VMtr2=4;        ' 2nd motor: E -> Sample X
+VMtr3=5;        ' 3rd motor: F -> Sample Y
+VMtr4=6;        ' 4th motor: G -> Sample Z
+' VMtr5=1;      ' Shutter motor [**uncomment and adjust if galvo]
+~a=VMtr1;
+~b=VMtr2;
+~c=VMtr3;
+~d=VMtr4;
+' ~e=VMtr5;     ' Shutter motor [**uncomment if galvo]
+VRunning=0;     ' Clear running flag
+VGo=0;          ' Clear go command
+VState=0;       ' Set state to IDLE
+'
+' Wait for Go
+MG "Vec: Waiting for Go";
+#VECIDLE
+JP #VECIDLE,(VGo=0);
+MG "Vec: Starting...";
+VError=0;       ' Clear error
+VAbort=0;       ' Clear abort command
+VProceed=0;     ' Clear proceed command
+VGo=0;          ' Clear go command
+VRunning=1;     ' Set running state
+'
+' Check shutter
+IF(VShtOTim=0);
+  MG "Vec: ERROR Shutter open time is zero";
+  VError=4;
+  JP#VEC;
+ENDIF;
+'
+' Calculate variables
+VDaqDur=VExp*VNumSamp;  ' Calculate total duration (ms)
+VMxTToSp=0;             ' Clear max time to speed (ms)
+IF(VDaqDur=0);
+  MG "Vec: ERROR Zero exposure";
+  VError=2;
+  JP#VEC;
+ENDIF;
+MG "Vec: Calculating...";
+JS #VECCALC(VMtr1,0);
+JS #VECCALC(VMtr2,1);
+JS #VECCALC(VMtr3,2);
+JS #VECCALC(VMtr4,3);
+'
+' Bail if motion for any axis is too fast
+IF(VTooFast[0]|VTooFast[1]|VTooFast[2]|VTooFast[3]);
+  MG "Vec: ERROR Too fast";
+  VError=3;
+  JP#VEC;
+ENDIF;
+'
+' Total time for entire vector
+VTotTime=2*VMxTToSp+VBufTime+2*VShtOTim+VShtLTim+VDaqDur;
+'
+' Calculate data capturing parameters
+' Capture arrays are 4000 points long
+' RC=1 -> 2ms / point -> max 8 sec
+' RC=2 -> 4ms / point -> max 16 sec
+' RC=3 -> 8ms / point -> max 32 sec
+' ...
+' RC=8 -> 256ms / point -> max 1024 sec
+VCaptRc=0;
+VCaptItv=1;
+#VECCAPT
+VCaptRc=VCaptRc+1;
+VCaptItv=VCaptItv*2;
+JP #VECCAPT,((VTotTime>(4000*VCaptItv))&(VCaptRc<8))
+'
+IF(VClcOnly=1);
+  MG "Vec: done calculating";
+  JP#VEC;
+ENDIF;
+MG "Vec: Motion OK, backing up";
+VState=1;                   ' Set state to BACKUP
+'
+' Move motors to starting position
+SH~a~b~c~d;                 ' Enable axes
+PA~a=VStart[0]-VBkUpDst[0]; ' Move absolute
+PA~b=VStart[1]-VBkUpDst[1];
+PA~c=VStart[2]-VBkUpDst[2];
+PA~d=VStart[3]-VBkUpDst[3];
+'PA~e=VShtCPos;              ' Close shutter [**uncomment for galvo]
+CB13;                       ' Close shutter [**comment for galvo]
+BG~a~b~c~d;                 ' Begin motion
+AM~a~b~c~d;                 ' Wait motion
+' TODO: check if motion successful?
+MG "Vec: Backed up";
+'
+' Wait for second part
+IF(VHold=1);
+  ' Set state to HOLDING
+  MG "Vec: Waiting";
+  VState=2;
+  ' Wait for proceed or abort
+#VECHOLD
+  JP #VECHOLD,((VProceed|VAbort)=0);
+ENDIF;
+MG "Vec: Proceeding";
+'
+' Bail if aborted
+IF(VAbort);
+  MG "Vec: ERROR Aborted";
+  VError=1;
+  JP#VEC;
+ENDIF;
+'
+VState=3;       ' Set state to ACQUIRING
+'
+' Set accelerations
+VSaveAcc[0]=_AC~a;
+VSaveAcc[1]=_AC~b;
+VSaveAcc[2]=_AC~c;
+VSaveAcc[3]=_AC~d;
+AC~a=VAccel[0]*1000000;
+AC~b=VAccel[1]*1000000;
+AC~c=VAccel[2]*1000000;
+AC~d=VAccel[3]*1000000;
+DC~a=VAccel[0]*1000000;
+DC~b=VAccel[1]*1000000;
+DC~c=VAccel[2]*1000000;
+DC~d=VAccel[3]*1000000;
+'
+' Set speeds
+VSaveSpd[0]=_SP~a;
+VSaveSpd[1]=_SP~b;
+VSaveSpd[2]=_SP~c;
+VSaveSpd[3]=_SP~d;
+SP~a=VDesSpd[0]*1000;
+SP~b=VDesSpd[1]*1000;
+SP~c=VDesSpd[2]*1000;
+SP~d=VDesSpd[3]*1000;
+'
+' Prepare data capture (can't use ~a..~d here...)
+RA VCaptM0[],VCaptM1[],VCaptM2[],VCaptM3[];
+RD _RPA,_RPE,_RPF,_RPG;
+'
+' Start data capture
+RC VCaptRc;
+'
+' Relative motion for all axes ("hard-coded" axes)
+'  A              E           F           G
+PR VTotDist[0],,,,VTotDist[1],VTotDist[2],VTotDist[3]
+MG "Vec: Defined profile";
+'
+SH~a~b~c~d;   ' Turn on motors
+' Note: Triggering motor is hard-coded to be axis A, index=0
+' Prepare output compare
+MG "Vec: configuring OC";
+MG "OCA=",VStart[0],",",VDaqDist[0]/VNumSamp;
+OCA=VStart[0],VDaqDist[0]/VNumSamp;
+MG "Vec: OC configured";
+'
+BG~a~b~c~d;   ' Begin motion
+' [** comment the next IF block for galvo]
+IF(VExpose=1);
+  APA=VStart[0]+VSpUpDst[0]+VBufDst[0]; ' Wait until open shutter pos
+  SB 13;                                ' Open shutter
+  APA=VEnd[0]-VSpUpDst[0]-VShtLDst[0];  ' Wait for close shutter pos
+  CB 13;                                ' Close shutter
+ENDIF;
+MG "Vec: Motion begun"
+' Wait motion
+IF(VTotDist[0]>0); AM~a; ENDIF;
+IF(VTotDist[1]>0); AM~b; ENDIF;
+IF(VTotDist[2]>0); AM~c; ENDIF;
+IF(VTotDist[3]>0); AM~d; ENDIF;
+' Stop all
+ST~a~b~c~d;
+MG "Vec: motion ended";
+'
+' Stop data capture
+RC0;
+MG "Vec: ",_RD," pts captured ",(VCaptItv*_RD)," ms"
+'
+' Restore acceleration
+AC~a=VSaveAcc[0];
+AC~b=VSaveAcc[1];
+AC~c=VSaveAcc[2];
+AC~d=VSaveAcc[3];
+DC~a=VSaveAcc[0];
+DC~b=VSaveAcc[1];
+DC~c=VSaveAcc[2];
+DC~d=VSaveAcc[3];
+'
+' Restore speeds
+SP~a=VSaveSpd[0];
+SP~b=VSaveSpd[1];
+SP~c=VSaveSpd[2];
+SP~d=VSaveSpd[3];
+' Done
+JP #VEC

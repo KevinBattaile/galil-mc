@@ -1,0 +1,16 @@
+#
+# Set some important values
+#
+record(motor, "$(P)$(M)") {
+    field(RDBD, "$(RDBD)")
+    field(DIR,  "$(DIR)")
+}
+
+#
+# The following records process whenever the motor record
+# processes, including the very first time. Disable them
+#
+
+record(ao, "$(P)$(M)_PCOF_SP") { field(DOL, "") }
+record(ao, "$(P)$(M)_ICOF_SP") { field(DOL, "") }
+record(ao, "$(P)$(M)_DCOF_SP") { field(DOL, "") }

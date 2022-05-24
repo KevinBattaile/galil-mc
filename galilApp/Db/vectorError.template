@@ -1,0 +1,20 @@
+record(ai, "_$(P)$(R)$(NAME)") {
+  field(DTYP, "asynFloat64")
+  field(DESC, "$(DESC=)")
+  field(INP,  "@asyn($(PORT),$(ADDR=0))USER_VAR $(PARAM)")
+  field(SCAN, "$(SCAN=Passive)")
+  field(PINI, "YES")
+  field(FLNK, "$(P)$(R)$(NAME)")
+}
+
+record(mbbi, "$(P)$(R)$(NAME)") {
+  field(DESC, "$(DESC=)")
+  field(INP,  "_$(P)$(R)$(NAME)")
+  field(ZRVL, "0") field(ZRST, "None")          field(ZRSV, "NO_ALARM")
+  field(ONVL, "1") field(ONST, "Aborted")       field(ONSV, "MAJOR")
+  field(TWVL, "2") field(TWST, "Zero exposure") field(TWSV, "MAJOR")
+  field(THVL, "3") field(THST, "Too fast")      field(THSV, "MAJOR")
+  field(FRVL, "4") field(FRST, "Zero shutter")  field(FRSV, "MAJOR")
+  field(FVVL, "5") field(FVST, "Too slow")      field(FVSV, "MAJOR")
+  field(PINI, "YES")
+}

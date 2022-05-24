@@ -1,0 +1,29 @@
+# Motor record positions
+# Real motors
+
+# Slit MB Top
+XF:19IDC-OP{Slt:MB-Ax:T}Mtr.DVAL
+
+# Slit MB Bottom
+XF:19IDC-OP{Slt:MB-Ax:B}Mtr.DVAL
+
+# Slit MB Inboard
+XF:19IDC-OP{Slt:MB-Ax:I}Mtr.DVAL
+
+# Slit MB Outboard
+XF:19IDC-OP{Slt:MB-Ax:O}Mtr.DVAL
+
+# Slits
+
+# Slit MB Y Gap
+XF:19IDC-OP{Slt:MB-Ax:YGap}Mtr.DVAL
+
+# Slit MB Y Center
+XF:19IDC-OP{Slt:MB-Ax:YCtr}Mtr.DVAL
+
+# Slit MB X Gap
+XF:19IDC-OP{Slt:MB-Ax:XGap}Mtr.DVAL
+
+# Slit MB X Center
+XF:19IDC-OP{Slt:MB-Ax:XCtr}Mtr.DVAL
+

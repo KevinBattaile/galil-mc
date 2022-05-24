@@ -1,0 +1,27 @@
+# Motor record positions
+# Real motors
+
+# Mirror Vertical
+XF:19IDC-OP{Mir:1-Ax:Y}Mtr.DVAL
+
+# Mirror Horizontal
+XF:19IDC-OP{Mir:1-Ax:X}Mtr.DVAL
+
+# Mirror Pitch
+XF:19IDC-OP{Mir:1-Ax:P}Mtr.DVAL
+
+# Mirror Roll
+XF:19IDC-OP{Mir:1-Ax:R}Mtr.DVAL
+
+# Mirror Bend 1
+XF:19IDC-OP{Mir:1-Ax:Bnd1}Mtr.DVAL
+
+# Mirror Bend 2
+XF:19IDC-OP{Mir:1-Ax:Bnd2}Mtr.DVAL
+
+# BPM 3 X
+XF:19IDC-OP{BPM:3-Ax:X}Mtr.DVAL
+
+# BPM 3 Y
+XF:19IDC-OP{BPM:3-Ax:Y}Mtr.DVAL
+

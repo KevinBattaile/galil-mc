@@ -1,0 +1,47 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-OP{Galil:7}
+
+# Motor record settings
+# Real motors
+
+# Mirror Vertical
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:Y}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:Y}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:Y}, M=Mtr
+
+# Mirror Horizontal
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:X}, M=Mtr
+
+# Mirror Pitch
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:P}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:P}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:P}, M=Mtr
+
+# Mirror Roll
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:R}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:R}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:R}, M=Mtr
+
+# Mirror Bend 1
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:Bnd1}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:Bnd1}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:Bnd1}, M=Mtr
+
+# Mirror Bend 2
+file "motor_settings.req"       P=XF:19IDC-OP{Mir:1-Ax:Bnd2}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mir:1-Ax:Bnd2}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mir:1-Ax:Bnd2}, M=Mtr
+
+# BPM 3 X
+file "motor_settings.req"       P=XF:19IDC-OP{BPM:3-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{BPM:3-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{BPM:3-Ax:X}, M=Mtr
+
+# BPM 3 Y
+file "motor_settings.req"       P=XF:19IDC-OP{BPM:3-Ax:Y}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{BPM:3-Ax:Y}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{BPM:3-Ax:Y}, M=Mtr
+
+

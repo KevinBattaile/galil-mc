@@ -1,0 +1,99 @@
+'
+'  NYX Galil 9
+'
+#AUTO
+'
+' === Custom motor configuration
+'
+' 2 -- ACTIVE LOW STEP PULSE 1 -- SERVO MOTOR
+MT2,2,2,1
+' LIMIT SWITCH ACTIVE LOW
+CN1
+' 2 AMP CURRENT FOR D4140
+AG2,2,2,2
+' 25% HOLDING CURRENT
+LC1,1,1
+'REVERSE QUADRATURE ON BOTH ENCODER
+CED=10
+ITD=0.3
+'DUAL LOOP DISABLE
+DVD=0
+'DIGITAL FEED BACK
+AFD=0
+'ENABLE MOTOR SHUT OFF BY POSITION ERROR
+OED=1
+'ERROR LIMIT TO TRIGGER OED
+ERD=10000
+FAD=0.5
+FVD=0
+' Bragg tuning
+KDD=70
+KPD=20
+KID=1.5
+ILD=0.2
+'
+' === IOC-generated routines
+'
+XQ #THREADB,1
+XQ #THREADD,3
+#THREADA
+IF(homeA=1)
+IF((((_LRA=0)&(hjsA>0))|((_LFA=0)&(hjsA<0)))&(hjogA=0))
+IF((((_LRA=1)|(_LDA>1))&(hjsA<0))|(((_LFA=1)|(_LDA=1)|(_LDA=3))&(hjsA>0)))
+IF((_MOA=0)&(_BGA=0));JGA=hjsA;WT10;BGA;hjogA=1;ENDIF;ENDIF;ENDIF
+IF((((_LRA=1)&(hjsA>0))|((_LFA=1)&(hjsA<0)))&(hjogA=1)&(_BGA=1));STA;ENDIF
+IF((hjogA=1)&(_BGA=0))
+IF((((_LRA=1)|(_LDA>1))&(hjsA<0))|(((_LFA=1)|(_LDA=1)|(_LDA=3))&(hjsA>0)))
+IF((_MOA=0)&(ueipA=1)&(uiA=1));JGA=hjsA;FIA;WT10;BGA;hjogA=2
+ELSE
+IF(_MOA=0);hjogA=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogA=2)&(_BGA=0));hjogA=3;ENDIF
+IF((((_LRA=1)|(_LDA>1))|((_LFA=1)|(_LDA=1)|(_LDA=3)))&(hjogA=3)&(_BGA=0))
+WT10;hjogA=0;homeA=0;homedA=1;MG "homedA",homedA;ENDIF;ENDIF
+IF(mlock=1);II ,,dpon,dvalues;ENDIF
+JP #THREADA
+#THREADB
+IF(homeB=1)
+IF((((_LRB=0)&(hjsB>0))|((_LFB=0)&(hjsB<0)))&(hjogB=0))
+IF((((_LRB=1)|(_LDB>1))&(hjsB<0))|(((_LFB=1)|(_LDB=1)|(_LDB=3))&(hjsB>0)))
+IF((_MOB=0)&(_BGB=0));JGB=hjsB;WT10;BGB;hjogB=1;ENDIF;ENDIF;ENDIF
+IF((((_LRB=1)&(hjsB>0))|((_LFB=1)&(hjsB<0)))&(hjogB=1)&(_BGB=1));STB;ENDIF
+IF((hjogB=1)&(_BGB=0))
+IF((((_LRB=1)|(_LDB>1))&(hjsB<0))|(((_LFB=1)|(_LDB=1)|(_LDB=3))&(hjsB>0)))
+IF((_MOB=0)&(ueipB=1)&(uiB=1));JGB=hjsB;FIB;WT10;BGB;hjogB=2
+ELSE
+IF(_MOB=0);hjogB=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogB=2)&(_BGB=0));hjogB=3;ENDIF
+IF((((_LRB=1)|(_LDB>1))|((_LFB=1)|(_LDB=1)|(_LDB=3)))&(hjogB=3)&(_BGB=0))
+WT10;hjogB=0;homeB=0;homedB=1;MG "homedB",homedB;ENDIF;ENDIF
+JP #THREADB
+#THREADD
+IF(homeD=1)
+IF((((_LRD=0)&(hjsD>0))|((_LFD=0)&(hjsD<0)))&(hjogD=0))
+IF((((_LRD=1)|(_LDD>1))&(hjsD<0))|(((_LFD=1)|(_LDD=1)|(_LDD=3))&(hjsD>0)))
+IF((_MOD=0)&(_BGD=0));JGD=hjsD;WT10;BGD;hjogD=1;ENDIF;ENDIF;ENDIF
+IF((((_LRD=1)&(hjsD>0))|((_LFD=1)&(hjsD<0)))&(hjogD=1)&(_BGD=1));STD;ENDIF
+IF((hjogD=1)&(_BGD=0))
+IF((((_LRD=1)|(_LDD>1))&(hjsD<0))|(((_LFD=1)|(_LDD=1)|(_LDD=3))&(hjsD>0)))
+IF((_MOD=0)&(ueipD=1)&(uiD=1));JGD=hjsD;FID;WT10;BGD;hjogD=2
+ELSE
+IF(_MOD=0);hjogD=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogD=2)&(_BGD=0));hjogD=3;ENDIF
+IF((((_LRD=1)|(_LDD>1))|((_LFD=1)|(_LDD=1)|(_LDD=3)))&(hjogD=3)&(_BGD=0))
+WT10;hjogD=0;homeD=0;homedD=1;MG "homedD",homedD;ENDIF;ENDIF
+JP #THREADD
+#CMDERR
+errstr=_ED;errcde=_TC;cmderr=cmderr+1
+EN1
+#TCPERR
+tcpcde=_TC;tcperr=tcperr+1
+RE1
+#LIMSWI
+IF(((_SCA=2)|(_SCA=3))&(_BGA=1))
+DCA=limdcA;VDS=limdcA;VDT=limdcA;ENDIF
+IF(((_SCB=2)|(_SCB=3))&(_BGB=1))
+DCB=limdcB;VDS=limdcB;VDT=limdcB;ENDIF
+IF(((_SCD=2)|(_SCD=3))&(_BGD=1))
+DCD=limdcD;VDS=limdcD;VDT=limdcD;ENDIF
+RE 1
+EN

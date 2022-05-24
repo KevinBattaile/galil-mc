@@ -1,0 +1,47 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-ES{Galil:1}
+
+# Motor record settings
+# Real motors
+
+# Cam HiMag Z
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:HiMag-Ax:Z}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:HiMag-Ax:Z}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:HiMag-Ax:Z}, M=Mtr
+
+# Cam HiMag X
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:HiMag-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:HiMag-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:HiMag-Ax:X}, M=Mtr
+
+# Cam HiMag Focus
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:HiMag-Ax:F}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:HiMag-Ax:F}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:HiMag-Ax:F}, M=Mtr
+
+# Cam LoMag Z
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:LoMag-Ax:Z}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:LoMag-Ax:Z}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:LoMag-Ax:Z}, M=Mtr
+
+# Cam LoMag X
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:LoMag-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:LoMag-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:LoMag-Ax:X}, M=Mtr
+
+# Cam LoMag Focus
+file "motor_settings.req"       P=XF:19IDC-ES{Cam:LoMag-Ax:F}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Cam:LoMag-Ax:F}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Cam:LoMag-Ax:F}, M=Mtr
+
+# Beam Pipe Pitch
+file "motor_settings.req"       P=XF:19IDC-ES{BP:1-Ax:P}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{BP:1-Ax:P}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{BP:1-Ax:P}, M=Mtr
+
+# Global Yaw
+file "motor_settings.req"       P=XF:19IDC-ES{Glb:1-Ax:Yaw}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Glb:1-Ax:Yaw}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Glb:1-Ax:Yaw}, M=Mtr
+
+

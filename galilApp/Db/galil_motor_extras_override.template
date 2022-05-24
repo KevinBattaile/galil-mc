@@ -1,0 +1,57 @@
+#
+# The following records have PINI=YES, which overwrite whatever is
+# set by the configuration file. Set it to NO.
+#
+
+record(mbbo, "$(P)$(M)_AMPGAIN_CMD")   { field(PINI, "NO") }
+record(mbbo, "$(P)$(M)_AMPCLGAIN_CMD") { field(PINI, "NO") }
+record(mbbo, "$(P)$(M)_AENCTYPE_CMD")  { field(PINI, "NO") }
+record(mbbo, "$(P)$(M)_MENCTYPE_CMD")  { field(PINI, "NO") }
+record(mbbo, "$(P)$(M)_OFFONERR_CMD")  { field(PINI, "NO") }
+record(ao,   "$(P)$(M)_AMPLC_SP")      { field(PINI, "NO") }
+record(ao,   "$(P)$(M)_ERRLIMIT_SP")   { field(PINI, "NO") }
+record(ao,   "$(P)$(M)_STEPSMOOTH_SP") { field(PINI, "NO") }
+
+record(calcout, "_$(P)$(M)_XTRAREAD_CALC") {
+    field(INPA, "$(MC)COMMERR_STATUS CP")
+    field(CALC, "A")
+    field(OUT,  "_$(P)$(M)_XTRAREAD_FOUT PP")
+    field(OOPT, "When Zero")
+}
+
+record(fanout, "_$(P)$(M)_XTRAREAD_FOUT") {
+    field(LNK0, "$(P)$(M)_AMPGAIN_STATUS")
+    field(LNK1, "$(P)$(M)_AMPCLGAIN_STATUS")
+    field(LNK2, "$(P)$(M)_AENCTYPE_STATUS")
+    field(LNK3, "$(P)$(M)_MENCTYPE_STATUS")
+    field(LNK4, "$(P)$(M)_OFFONERR_STATUS")
+    field(LNK5, "$(P)$(M)_AMPLC_MON")
+    field(LNK6, "$(P)$(M)_ERRLIMIT_MON")
+    field(LNK7, "$(P)$(M)_STEPSMOOTH_MON")
+}
+
+record(mbbo, "$(P)$(M)_HOMEALLOWED_CMD") {
+    field(VAL,  "$(HOMEALLOWED)")
+}
+
+record(bo, "$(P)$(M)_AUTOONOFF_CMD") {
+    field(VAL,  "$(AUTOONOFF=0)")
+}
+
+# Don't Jog after Home
+record(bo,"$(P)$(M)_JAH_CMD") {
+    field(VAL,  "0")
+}
+
+record(ao,"$(P)$(M)_JAHV_SP") {
+    field(VAL,  "0")
+}
+
+record(bo, "$(P)$(M)_HOME_CMD") {
+    field(DESC, "Home this motor")
+    field(OUT,  "$(P)$(M).HOM$(HOMEDIR=F) PP")
+    field(VAL,  "0")
+    field(ZNAM, "")
+    field(ONAM, "Home")
+}
+

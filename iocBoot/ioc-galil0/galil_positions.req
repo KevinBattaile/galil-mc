@@ -1,0 +1,9 @@
+# Motor record positions
+# Real motors
+
+# Omega
+XF:19IDC-TST{Gon:1-Ax:O}Mtr.DVAL
+
+# X
+XF:19IDC-TST{Gon:1-Ax:X}Mtr.DVAL
+

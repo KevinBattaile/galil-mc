@@ -1,0 +1,21 @@
+# User array for captured data
+record(waveform,"$(P)$(R)Cap:$(M)-I")
+{
+    field(SCAN, "I/O Intr")
+    field(DESC, "User array$(ADDR)")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(FTVL, "DOUBLE")
+    field(NELM, "$(NELM)")
+    field(INP,  "@asyn($(PORT),$(ADDR))CONTROLLER_UARRAY")
+}
+
+record(stringout,"$(P)$(R)Cap:$(M)Arr-SP")
+{
+    field(DESC, "User array $(ADDR) name")
+    field(PINI, "YES")
+    field(OMSL, "supervisory")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR))CONTROLLER_UARRAY_NAME")
+    field(VAL,  "$(NAME)")
+}
+

@@ -1,0 +1,50 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-ES{Galil:2}
+
+# Motor record settings
+# Real motors
+
+# Omega
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:O}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:O}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:O}, M=Mtr
+
+# Sample Vert
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:V}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:V}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:V}, M=Mtr
+
+# Optic Vert
+file "motor_settings.req"       P=XF:19IDC-ES{Opt:1-Ax:V}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Opt:1-Ax:V}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Opt:1-Ax:V}, M=Mtr
+
+# Global X
+file "motor_settings.req"       P=XF:19IDC-ES{Glb:1-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Glb:1-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Glb:1-Ax:X}, M=Mtr
+
+# Sample X
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:X}, M=Mtr
+
+# Sample Y
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:Y}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:Y}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:Y}, M=Mtr
+
+# Sample Z
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:Z}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:Z}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:Z}, M=Mtr
+
+# Kappa
+file "motor_settings.req"       P=XF:19IDC-ES{Gon:1-Ax:K}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Gon:1-Ax:K}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Gon:1-Ax:K}, M=Mtr
+
+# Digital Outputs
+
+file "galil_digital_out_bit.req" P=XF:19IDC-ES{Galil:2}, R=SHUT
+

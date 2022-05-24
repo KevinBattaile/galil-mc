@@ -1,0 +1,24 @@
+# Motor record positions
+# Real motors
+
+# Beam Stop V
+XF:19IDC-ES{BS:1-Ax:V}Mtr.DVAL
+
+# Beam Stop H
+XF:19IDC-ES{BS:1-Ax:H}Mtr.DVAL
+
+# Beam Stop Z
+XF:19IDC-ES{BS:1-Ax:Z}Mtr.DVAL
+
+# Slit Beam Def Bottom
+XF:19IDC-ES{Slt:BD-Ax:B}Mtr.DVAL
+
+# Slit Beam Def Top
+XF:19IDC-ES{Slt:BD-Ax:T}Mtr.DVAL
+
+# Slit Beam Def Inboard
+XF:19IDC-ES{Slt:BD-Ax:I}Mtr.DVAL
+
+# Slit Beam Def Outboard
+XF:19IDC-ES{Slt:BD-Ax:O}Mtr.DVAL
+

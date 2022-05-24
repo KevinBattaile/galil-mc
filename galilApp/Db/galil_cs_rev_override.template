@@ -1,0 +1,3 @@
+record(stringout, "$(P)$(M)_RTRANSFORM$(AX)_SP") {
+    field(VAL,  "$(TRANSFORM)")
+}

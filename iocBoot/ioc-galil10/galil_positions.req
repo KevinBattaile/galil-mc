@@ -1,0 +1,27 @@
+# Motor record positions
+# Real motors
+
+# Mono C2 Perp
+XF:19IDC-OP{Mono:DCM-Ax:Perp}Mtr.DVAL
+
+# Mono C2 Para
+XF:19IDC-OP{Mono:DCM-Ax:Para}Mtr.DVAL
+
+# Mono C2 Pitch
+XF:19IDC-OP{Mono:DCM-Ax:P}Mtr.DVAL
+
+# Mono C2 Roll
+XF:19IDC-OP{Mono:DCM-Ax:R}Mtr.DVAL
+
+# Mono C2 Yaw
+XF:19IDC-OP{Mono:DCM-Ax:Yaw}Mtr.DVAL
+
+# Mono C2 Bend 1
+XF:19IDC-OP{Mono:DCM-Ax:Bnd1}Mtr.DVAL
+
+# Mono C2 Bend 2
+XF:19IDC-OP{Mono:DCM-Ax:Bnd2}Mtr.DVAL
+
+# Mono C1 Bend
+XF:19IDC-OP{Mono:DCM-Ax:Bnd}Mtr.DVAL
+

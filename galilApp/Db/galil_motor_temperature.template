@@ -1,0 +1,10 @@
+#
+# Temperature based on analog input reading
+#
+
+record(calc, "$(P)T-I") {
+    field(INPA, "$(P)$(R)_MON CP")
+    field(CALC, "$(CALC)")
+    field(EGU,  "$(EGU)")
+    field(PREC, "$(PREC)")
+}

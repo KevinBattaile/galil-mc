@@ -1,0 +1,37 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-ES{Galil:5}
+
+# Motor record settings
+# Real motors
+
+# Detector Z
+file "motor_settings.req"       P=XF:19IDC-ES{Det:1-Ax:Z}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Det:1-Ax:Z}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Det:1-Ax:Z}, M=Mtr
+
+# Table Vert Center
+file "motor_settings.req"       P=XF:19IDC-ES{Tbl:1-Ax:VCtr}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Tbl:1-Ax:VCtr}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Tbl:1-Ax:VCtr}, M=Mtr
+
+# Table Vert Outboard
+file "motor_settings.req"       P=XF:19IDC-ES{Tbl:1-Ax:VO}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Tbl:1-Ax:VO}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Tbl:1-Ax:VO}, M=Mtr
+
+# Table Vert Inboard
+file "motor_settings.req"       P=XF:19IDC-ES{Tbl:1-Ax:VI}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Tbl:1-Ax:VI}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Tbl:1-Ax:VI}, M=Mtr
+
+# Table Horiz Upstream
+file "motor_settings.req"       P=XF:19IDC-ES{Tbl:1-Ax:HU}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Tbl:1-Ax:HU}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Tbl:1-Ax:HU}, M=Mtr
+
+# Table Horiz Downstream
+file "motor_settings.req"       P=XF:19IDC-ES{Tbl:1-Ax:HD}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Tbl:1-Ax:HD}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Tbl:1-Ax:HD}, M=Mtr
+
+

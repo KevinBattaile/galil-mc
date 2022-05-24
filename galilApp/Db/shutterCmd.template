@@ -1,0 +1,45 @@
+record(calcout, "$(P)$(R)Cmd:Opn-Cmd") {
+    field(SCAN, "Passive")
+    field(OUT,  "$(MTR)")
+    field(INPA, "$(P)$(R)Pos:Opn-I")
+    field(CALC, "A")
+}
+
+record(calcout, "$(P)$(R)Cmd:Cls-Cmd") {
+    field(SCAN, "Passive")
+    field(OUT,  "$(MTR)")
+    field(INPA, "$(P)$(R)Pos:Cls-I")
+    field(CALC, "A")
+}
+
+record(mbbi, "$(P)$(R)Pos-Sts") {
+    field(SCAN, "1 second")
+    field(ZRST, "Open")
+    field(ONST, "Closed")
+    field(TWST, "Undefined")
+}
+
+record(calc, "$(P)$(R)Pos:Opn-Sts") {
+    field(SCAN, "1 second")
+    field(INPA, "$(MTR).RBV")
+    field(INPB, "$(P)$(R)Pos:Opn-I")
+    field(INPC, "$(TOLERANCE)")
+    field(CALC, "(A-C<B)&&(A+C>B)")
+}
+
+record(calc, "$(P)$(R)Pos:Cls-Sts") {
+    field(SCAN, "1 second")
+    field(INPA, "$(MTR).RBV")
+    field(INPB, "$(P)$(R)Pos:Cls-I")
+    field(INPC, "$(TOLERANCE)")
+    field(CALC, "(A-C<B)&&(A+C>B)")
+}
+
+record(calcout, "$(P)$(R)Pos-CO") {
+    field(SCAN, "1 second")
+    field(INPA, "$(P)$(R)Pos:Opn-Sts")
+    field(INPB, "$(P)$(R)Pos:Cls-Sts")
+    field(CALC, "A ? 0 : (B ? 1 : 2)")
+    field(OUT,  "$(P)$(R)Pos-Sts")
+}
+

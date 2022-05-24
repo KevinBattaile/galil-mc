@@ -1,0 +1,22 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-OP{Galil:9}
+
+# Motor record settings
+# Real motors
+
+# BPM 2 X
+file "motor_settings.req"       P=XF:19IDC-OP{BPM:2-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{BPM:2-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{BPM:2-Ax:X}, M=Mtr
+
+# BPM 2 Y
+file "motor_settings.req"       P=XF:19IDC-OP{BPM:2-Ax:Y}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{BPM:2-Ax:Y}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{BPM:2-Ax:Y}, M=Mtr
+
+# Mono Bragg
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:B}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:B}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:B}, M=Mtr
+
+

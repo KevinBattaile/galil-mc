@@ -1,0 +1,412 @@
+#AUTO
+'
+' Vector scanning variables
+'
+' Status variables
+VState=0;       ' [OUT] Vector state (IDLE, BACKUP, HOLDING, ACQUIRING)
+VRunning=0;     ' [OUT] Vector is running
+VError=0;       ' [OUT] Vector error (None, Aborted, Zero Exposure,
+'                                     Too Fast, Zero Shutter,
+'                                     Too Slow)
+'
+' Commands
+VGo=0;          ' [IN] Start vector
+VProceed=0;     ' [IN] Proceed paused motion
+VAbort=0;       ' [IN] Abort motion
+'
+' Parameters
+VExpose=0;      ' [IN] Should expose? 1=expose, 0=don't
+VHold=0;        ' [IN] Should wait for proceed? 1=yes
+VGather=0;      ' [IN] Should record motion? 1=yes (not implemented yet)
+VClcOnly=0;     ' [IN] Should only calculate positions? 1=yes
+'
+VNumSamp=0;     ' [IN] Number of samples
+VExp=0;         ' [IN] Exposure per sample (ms)
+VDaqDur=0;      ' [OUT] Data acquisition duration (ms)
+'
+VShtOPos=0;     ' [IN] Shutter open position (cts) (for galvo)
+VShtCPos=0;     ' [IN] Shutter closed position (cts) (for galvo)
+VShtOTim=0;     ' [IN] Shutter opening/closing time (ms)
+VShtLTim=0;     ' [IN] Shutter lag time (ms)
+VBufTime=0;     ' [IN] "Buffer" motion time (ms)
+VMxTToSp=0;     ' [OUT] Max time necessary to reach desired speed (ms)
+'
+' Arrays
+DM VStart[4];   ' [IN] Starting positions (ct)
+DM VEnd[4];     ' [IN] Ending positions (ct)
+DM VTooFast[4]; ' [OUT] Motors that are too fast (1 or 0)
+DM VAccel[4];   ' [OUT] Calc. accelerations (ct/ms^2)
+DM VDaqDist[4]; ' [OUT] Calc. data acquisition distances (ct)
+DM VDesSpd[4];  ' [OUT] Calc. desired speeds (ct/ms)
+DM VTimToSp[4]; ' [OUT] Calc. times to speed (ms)
+DM VDir[4];     ' [OUT] Calc. motion directions (1 or -1)
+DM VSpUpDst[4]; ' [OUT] Calc. speed up distances (ct)
+DM VBufDst[4];  ' [OUT] Calc. buffer distances (ct)
+DM VShtODst[4]; ' [OUT] Calc. dists during shutter opening (ct)
+DM VShtLDst[4]; ' [OUT] Calc. dists during shutter lag (ct)
+DM VBkUpDst[4]; ' [OUT] Calc. backup distances (ct)
+'
+MO
+TM 500
+' Motor E (encoded)
+AGE=2
+CEE=6;    ' used for closed loop
+MTE=-2
+YAE=16
+CLE=1;    ' used for closed loop
+K1E=0.25; ' used for closed loop
+' Motor F (encoded)
+AGF=2
+CEF=4
+MTF=-2
+YAF=16
+XQ #THREADE,4
+XQ #THREADF,5
+XQ #VEC,6
+EN
+#THREADE
+IF(homeE=1)
+IF((((_LRE=0)&(hjsE>0))|((_LFE=0)&(hjsE<0)))&(hjogE=0))
+IF((((_LRE=1)|(_LDE>1))&(hjsE<0))|(((_LFE=1)|(_LDE=1)|(_LDE=3))&(hjsE>0)))
+IF((_MOE=0)&(_BGE=0));JGE=hjsE;WT10;BGE;hjogE=1;ENDIF;ENDIF;ENDIF
+IF((((_LRE=1)&(hjsE>0))|((_LFE=1)&(hjsE<0)))&(hjogE=1)&(_BGE=1));STE;ENDIF
+IF((hjogE=1)&(_BGE=0))
+IF((((_LRE=1)|(_LDE>1))&(hjsE<0))|(((_LFE=1)|(_LDE=1)|(_LDE=3))&(hjsE>0)))
+IF((_MOE=0)&(ueipE=1)&(uiE=1));JGE=hjsE;FIE;WT10;BGE;hjogE=2
+ELSE
+IF(_MOE=0);hjogE=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogE=2)&(_BGE=0));hjogE=3;ENDIF
+IF((((_LRE=1)|(_LDE>1))|((_LFE=1)|(_LDE=1)|(_LDE=3)))&(hjogE=3)&(_BGE=0))
+WT10;hjogE=0;homeE=0;homedE=1;MG "homedE",homedE;ENDIF;ENDIF
+JP #THREADE
+#THREADF
+IF(homeF=1)
+IF((((_LRF=0)&(hjsF>0))|((_LFF=0)&(hjsF<0)))&(hjogF=0))
+IF((((_LRF=1)|(_LDF>1))&(hjsF<0))|(((_LFF=1)|(_LDF=1)|(_LDF=3))&(hjsF>0)))
+IF((_MOF=0)&(_BGF=0));JGF=hjsF;WT10;BGF;hjogF=1;ENDIF;ENDIF;ENDIF
+IF((((_LRF=1)&(hjsF>0))|((_LFF=1)&(hjsF<0)))&(hjogF=1)&(_BGF=1));STF;ENDIF
+IF((hjogF=1)&(_BGF=0))
+IF((((_LRF=1)|(_LDF>1))&(hjsF<0))|(((_LFF=1)|(_LDF=1)|(_LDF=3))&(hjsF>0)))
+IF((_MOF=0)&(ueipF=1)&(uiF=1));JGF=hjsF;FIF;WT10;BGF;hjogF=2
+ELSE
+IF(_MOF=0);hjogF=3;ENDIF;ENDIF;ENDIF;ENDIF
+IF((hjogF=2)&(_BGF=0));hjogF=3;ENDIF
+IF((((_LRF=1)|(_LDF>1))|((_LFF=1)|(_LDF=1)|(_LDF=3)))&(hjogF=3)&(_BGF=0))
+WT10;hjogF=0;homeF=0;homedF=1;MG "homedF",homedF;ENDIF;ENDIF
+JP #THREADF
+#CMDERR
+errstr=_ED;errcde=_TC;cmderr=cmderr+1;
+' If the error was in the #VEC thread, restart it
+'IF(_ED1=6);
+'  XQ #VEC,6;
+'ENFIF;
+EN1
+#TCPERR
+tcpcde=_TC;tcperr=tcperr+1
+RE1
+#LIMSWI
+IF(((_SCE=2)|(_SCE=3))&(_BGE=1))
+DCE=limdcE;VDS=limdcE;VDT=limdcE;ENDIF
+IF(((_SCF=2)|(_SCF=3))&(_BGF=1))
+DCF=limdcF;VDS=limdcF;VDT=limdcF;ENDIF
+RE 1
+EN
+'
+' Vector Scanning
+'
+' Hard-coded assumptions:
+'   Output bit DO13: Shutter [if non-galvo]
+'
+' VECCALC: Subroutine to calculate Vector variables
+' Arguments on the stack:
+'   ^a: axis number
+'   ^b: axis index into arrays
+#VECCALC
+~h=^a;                              ' Set axis variable
+VAccel[^b]=_AC~h/1000000;           ' Axis acceleration (ct/ms^2)
+VDaqDist[^b]=VEnd[^b]-VStart[^b];   ' Data acq distance (ct)
+VDesSpd[^b]=VDaqDist[^b]/VDaqDur;   ' Desired speed (ct/ms)
+'
+' Check if this axis is too fast
+IF(@ABS[VDesSpd[^b]]>(_SP~h/1000));
+  VTooFast[^b]=1;
+  MG "Desired",VDesSpd[^b],"ct/ms, Max",(_SP~h/1000),"ct/ms";
+ELSE;
+  VTooFast[^b]=0;
+ENDIF;
+'
+' Time to desired speed (ms)
+VTimToSp[^b]=@ABS[VDesSpd[^b]]/VAccel[^b];
+'
+' Keep track of maximum time to speed
+IF(VTimToSp[^b]>VMxTToSp);
+  VMxTToSp=VTimToSp[^b];
+ENDIF;
+'
+' Determine motion direction
+IF(VStart[^b]>VEnd[^b]);
+  VDir[^b]=-1;
+ELSE;
+  VDir[^b]=1;
+ENDIF;
+'
+' Speed up distance (ct)
+VSpUpDst[^b]=VDir[^b]*VAccel[^b]*VTimToSp[^b]*VTimToSp[^b]/2;
+'
+VBufDst[^b]=VDesSpd[^b]*VBufTime;   ' Buffer distance (ct)
+VShtODst[^b]=VDesSpd[^b]*VShtOTim;  ' Shutter opening distance (ct)
+VShtLDst[^b]=VDesSpd[^b]*VShtLTim;  ' Shutter lag distance (ct)
+'
+' Total backup
+VBkUpDst[^b]=VSpUpDst[^b]+VBufDst[^b]+VShtODst[^b]+VShtLDst[^b];
+EN
+' VECMOVE: Subroutine to calculate and issue PVT sub-segments to
+'          a motor. Each sub-segment will not exceed the 1024
+'          samples limit. Assumes *CONSTANT SPEED* through the
+'          segment.
+' Arguments on the stack:
+'   ^a: axis
+'   ^b: total distance
+'   ^c: speed (constant)
+'   ^d: total time
+#VECMOVE
+~h=^a;                    ' Set axis variable
+VCSegTim=1024;            ' Duration of a full sub-segment (ct)
+VCSegDst=VCSegTim/^d*^b;  ' Distance of a full sub-segment (ct)
+VCRemDst=^b;              ' Remaining distance (ct)
+VCRemTim=^d;              ' Remaining time (ms)
+VCSpeed=^c;               ' Constant speed (ct/ms)
+' Issue full sub-segments in a loop
+IF(VCRemTim>VCSegTim);
+#VECMVSG
+  PV~h=VCSegDst,VCSpeed,VCSegTim*2;
+  VCRemTim=VCRemTim-VCSegTim;
+  VCRemDst=VCRemDst-VCSegDst;
+  JP #VECMVSG,(VCRemTim>VCSegTim);
+ENDIF;
+' Issue final remaining sub-segment
+IF(VCRemTim>0);
+  PV~h=VCRemDst,VCSpeed,VCRemTim*2;
+ENDIF;
+EN
+'
+' Subroutine to run the vector scan
+#VEC
+' Motor map
+VMtr1=4;        ' 1st motor: E -> E
+VMtr2=5;        ' 2nd motor: F -> F
+' VMtr5=1;      ' Shutter motor [**uncomment and adjust if galvo]
+~a=VMtr1;
+~b=VMtr2;
+' ~e=VMtr5;     ' Shutter motor [**uncomment if galvo]
+VRunning=0;     ' Clear running flag
+VGo=0;          ' Clear go command
+VState=0;       ' Set state to IDLE
+'
+' Wait for Go
+MG "Vec: Waiting for Go";
+#VECIDLE
+JP #VECIDLE,(VGo=0);
+MG "Vec: Starting...";
+VError=0;       ' Clear error
+VAbort=0;       ' Clear abort command
+VProceed=0;     ' Clear proceed command
+VGo=0;          ' Clear go command
+VRunning=1;     ' Set running state
+'
+' Check shutter
+IF(VShtOTim=0);
+  MG "Vec: ERROR Shutter open time is zero";
+  VError=4;
+  JP#VEC;
+ENDIF;
+'
+' Calculate variables
+VDaqDur=VExp*VNumSamp;  ' Calculate total duration (ms)
+VMxTToSp=0;             ' Clear max time to speed (ms)
+IF(VDaqDur=0);
+  MG "Vec: ERROR Zero exposure";
+  VError=2;
+  JP#VEC;
+ENDIF;
+MG "Vec: Calculating...";
+JS #VECCALC(VMtr1,0);
+JS #VECCALC(VMtr2,1);
+'JS #VECCALC(VMtr3,2);
+'JS #VECCALC(VMtr4,3);
+'
+' Bail if motion for any axis is too fast
+IF(VTooFast[0]|VTooFast[1]);
+  MG "Vec: ERROR Too fast";
+  VError=3;
+  JP#VEC;
+ENDIF;
+'
+' NOTE: third parameter to PVn commands is time,
+' in samples, and must not exceed 2048, which is
+' around 1024 ms (for TM=500). For constant-speed
+' segments, we break them into sub-segments to
+' avoid this limitation. For non-constant-speed
+' segments, check for this condition here.
+IF(VMxTToSp*2>2048);
+  VError=5;
+  MG "Vec: ERROR VMxTToSp too long: ",VMxTToSp;
+  JP #VEC;
+ENDIF;
+'
+IF(VClcOnly=1);
+  MG "Vec: done calculating";
+  JP#VEC;
+ENDIF;
+MG "Vec: Motion OK, backing up";
+MG "Vec:   A=",VStart[0]-VBkUpDst[0];
+MG "Vec:   B=",VStart[1]-VBkUpDst[1];
+'
+VState=1;                   ' Set state to BACKUP
+'
+' Move motors to starting position
+SH~a~b;                     ' Enable axes
+PA~a=VStart[0]-VBkUpDst[0]; ' Move absolute
+PA~b=VStart[1]-VBkUpDst[1];
+'PA~c=VStart[2]-VBkUpDst[2];
+'PA~d=VStart[3]-VBkUpDst[3];
+'PA~e=VShtCPos;              ' Close shutter [**uncomment for galvo]
+CB13;                       ' Close shutter [**comment for galvo]
+BG~a~b;                     ' Begin motion
+AM~a~b;                     ' Wait motion
+' TODO: check if motion successful?
+MG "Vec: Backed up";
+'
+' Wait for second part
+IF(VHold=1);
+  ' Set state to HOLDING
+  MG "Vec: Waiting";
+  VState=2;
+  ' Wait for proceed or abort
+#VECHOLD
+  JP #VECHOLD,((VProceed|VAbort)=0);
+ENDIF;
+MG "Vec: Proceeding";
+'
+' Bail if aborted
+IF(VAbort);
+  MG "Vec: ERROR Aborted";
+  VError=1;
+  JP#VEC;
+ENDIF;
+'
+VState=3;       ' Set state to ACQUIRING
+' Bring everyone up to desired speed
+PV~a=VSpUpDst[0],VDesSpd[0],VMxTToSp*2;
+PV~b=VSpUpDst[1],VDesSpd[1],VMxTToSp*2;
+'PV~c=VSpUpDst[2],VDesSpd[2],VMxTToSp*2;
+'PV~d=VSpUpDst[3],VDesSpd[3],VMxTToSp*2;
+MG "Vec: Speed up";
+MG "Vec:   A=",VSpUpDst[0],VDesSpd[0],VMxTToSp*2;
+MG "Vec:   B=",VSpUpDst[1],VDesSpd[1],VMxTToSp*2;
+'
+' Buffer (stay at constant speed for a while)
+IF(VBufTime>0);
+  JS #VECMOVE(VMtr1,VBufDst[0],VDesSpd[0],VBufTime);
+  JS #VECMOVE(VMtr2,VBufDst[1],VDesSpd[1],VBufTime);
+'  JS #VECMOVE(VMtr3,VBufDst[2],VDesSpd[2],VBufTime);
+'  JS #VECMOVE(VMtr4,VBufDst[3],VDesSpd[3],VBufTime);
+MG "Vec: Buffer";
+MG "Vec:   A=",VBufDst[0],VDesSpd[0],VBufTime*2;
+MG "Vec:   B=",VBufDst[1],VDesSpd[1],VBufTime*2;
+ENDIF;
+'
+' Shutter opening (open shutter while everyone is moving)
+JS #VECMOVE(VMtr1,VShtODst[0],VDesSpd[0],VShtOTim);
+JS #VECMOVE(VMtr2,VShtODst[1],VDesSpd[1],VShtOTim);
+'JS #VECMOVE(VMtr3,VShtODst[2],VDesSpd[2],VShtOTim);
+'JS #VECMOVE(VMtr4,VShtODst[3],VDesSpd[3],VShtOTim);
+'IF(VExpose=1); ' [**uncomment for galvo]
+'  PV~e=VShtOPos-VShtCPos,0,VShtOTim*2;
+'ENDIF;
+MG "Vec: Open shutter";
+MG "Vec:   A=",VShtODst[0],VDesSpd[0],VShtOTim*2;
+MG "Vec:   B=",VShtODst[1],VDesSpd[1],VShtOTim*2;
+'
+' Wait shutter lag
+IF(VShtLTim>0);
+  JS #VECMOVE(VMtr1,VShtLDst[0],VDesSpd[0],VShtLTim);
+  JS #VECMOVE(VMtr2,VShtLDst[1],VDesSpd[1],VShtLTim);
+'  JS #VECMOVE(VMtr3,VShtLDst[2],VDesSpd[2],VShtLTim);
+'  JS #VECMOVE(VMtr4,VShtLDst[3],VDesSpd[3],VShtLTim);
+MG "Vec: Shutter lag";
+MG "Vec:   A=",VShtLDst[0],VDesSpd[0],VShtLTim*2;
+MG "Vec:   B=",VShtLDst[1],VDesSpd[1],VShtLTim*2;
+ENDIF;
+'
+' Data acquisition
+JS #VECMOVE(VMtr1,VDaqDist[0]-VShtLDst[0],VDesSpd[0],VDaqDur);
+JS #VECMOVE(VMtr2,VDaqDist[1]-VShtLDst[1],VDesSpd[1],VDaqDur);
+'JS #VECMOVE(VMtr3,VDaqDist[2]-VShtLDst[2],VDesSpd[2],VDaqDur);
+'JS #VECMOVE(VMtr4,VDaqDist[3]-VShtLDst[3],VDesSpd[3],VDaqDur);
+MG "Vec: Data Acquisition";
+MG "Vec:   A=",VDaqDist[0],VDesSpd[0],VDaqDur*2;
+MG "Vec:   B=",VDaqDist[1],VDesSpd[1],VDaqDur*2;
+'
+' Close shutter while still acquiring
+JS #VECMOVE(VMtr1,VShtODst[0],VDesSpd[0],VShtOTim);
+JS #VECMOVE(VMtr2,VShtODst[1],VDesSpd[1],VShtOTim);
+'JS #VECMOVE(VMtr3,VShtODst[2],VDesSpd[2],VShtOTim);
+'JS #VECMOVE(VMtr4,VShtODst[3],VDesSpd[3],VShtOTim);
+'IF(VExpose=1); ' [**uncomment for galvo]
+'  PV~e=VShtCPos-VShtODst,0,VShtOTim*2;
+'ENDIF;
+MG "Vec: Close shutter";
+MG "Vec:   A=",VShtODst[0],VDesSpd[0],VShtOTim*2;
+MG "Vec:   B=",VShtODst[1],VDesSpd[1],VShtOTim*2;
+'
+' Wait shutter lag
+IF(VShtLTim>0);
+  JS #VECMOVE(VMtr1,VShtLDst[0],VDesSpd[0],VShtLTim);
+  JS #VECMOVE(VMtr2,VShtLDst[1],VDesSpd[1],VShtLTim);
+'  JS #VECMOVE(VMtr3,VShtLDst[2],VDesSpd[2],VShtLTim);
+'  JS #VECMOVE(VMtr4,VShtLDst[3],VDesSpd[3],VShtLTim);
+MG "Vec: Shutter lag";
+MG "Vec:   A=",VShtLDst[0],VDesSpd[0],VShtLTim*2;
+MG "Vec:   B=",VShtLDst[1],VDesSpd[1],VShtLTim*2;
+ENDIF;
+'
+' Stop everyone
+PV~a=VSpUpDst[0],0,VMxTToSp*2;
+PV~b=VSpUpDst[1],0,VMxTToSp*2;
+'PV~c=VSpUpDst[2],0,VMxTToSp*2;
+'PV~c=VSpUpDst[3],0,VMxTToSp*2;
+MG "Vec: Stop";
+MG "Vec:   A=",VSpUpDst[0],VDesSpd[0],VMxTToSp*2;
+MG "Vec:   B=",VSpUpDst[1],VDesSpd[1],VMxTToSp*2;
+'
+' End
+PV~a=0,0,0;
+PV~b=0,0,0;
+'PV~c=0,0,0;
+'PV~d=0,0,0;
+'PV~e=0,0,0;  ' [**uncomment for galvo]
+MG "Vec: Defined profile";
+'
+SH~a~b;   ' Turn on motors
+' Note: Triggering motor is hard-coded to be axis E, index=0
+' Prepare output compare
+MG "Vec: configuring OC";
+'MG "OCE=",VStart[0],",",VDaqDist[0]/VNumSamp;
+' OCE=VStart[0],VDaqDist[0]/VNumSamp;
+'MG "Vec: OC configured";
+BT~a~b;   ' Begin
+' [** comment the next IF block for galvo]
+MG "opn", VStart[0]+VSpUpDst[0]+VBufDst[0];
+MG "cls", VEnd[0]-VSpUpDst[0]-VShtLDst[0];
+IF(VExpose=1);
+  APE=VStart[0]+VSpUpDst[0]+VBufDst[0]; ' Wait until open shutter pos
+  SB 13;                                ' Open shutter
+  APE=VEnd[0]-VSpUpDst[0]-VShtLDst[0];  ' Wait for close shutter pos
+  CB 13;                                ' Close shutter
+ENDIF;
+AM~a~b;   ' Wait motion
+MG "Vec: motion ended";
+'
+JP#VEC
+EN

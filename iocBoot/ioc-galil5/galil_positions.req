@@ -1,0 +1,21 @@
+# Motor record positions
+# Real motors
+
+# Detector Z
+XF:19IDC-ES{Det:1-Ax:Z}Mtr.DVAL
+
+# Table Vert Center
+XF:19IDC-ES{Tbl:1-Ax:VCtr}Mtr.DVAL
+
+# Table Vert Outboard
+XF:19IDC-ES{Tbl:1-Ax:VO}Mtr.DVAL
+
+# Table Vert Inboard
+XF:19IDC-ES{Tbl:1-Ax:VI}Mtr.DVAL
+
+# Table Horiz Upstream
+XF:19IDC-ES{Tbl:1-Ax:HU}Mtr.DVAL
+
+# Table Horiz Downstream
+XF:19IDC-ES{Tbl:1-Ax:HD}Mtr.DVAL
+

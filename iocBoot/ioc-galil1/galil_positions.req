@@ -1,0 +1,27 @@
+# Motor record positions
+# Real motors
+
+# Cam HiMag Z
+XF:19IDC-ES{Cam:HiMag-Ax:Z}Mtr.DVAL
+
+# Cam HiMag X
+XF:19IDC-ES{Cam:HiMag-Ax:X}Mtr.DVAL
+
+# Cam HiMag Focus
+XF:19IDC-ES{Cam:HiMag-Ax:F}Mtr.DVAL
+
+# Cam LoMag Z
+XF:19IDC-ES{Cam:LoMag-Ax:Z}Mtr.DVAL
+
+# Cam LoMag X
+XF:19IDC-ES{Cam:LoMag-Ax:X}Mtr.DVAL
+
+# Cam LoMag Focus
+XF:19IDC-ES{Cam:LoMag-Ax:F}Mtr.DVAL
+
+# Beam Pipe Pitch
+XF:19IDC-ES{BP:1-Ax:P}Mtr.DVAL
+
+# Global Yaw
+XF:19IDC-ES{Glb:1-Ax:Yaw}Mtr.DVAL
+

@@ -1,0 +1,10 @@
+record(bo, "$(P)$(R)$(NAME)") {
+    field(ZNAM, "")
+    field(ONAM, "Sync")
+    field(FLNK, "_$(P)$(R)$(NAME)")
+}
+
+record(event, "_$(P)$(R)$(NAME)") {
+    field(VAL,  "$(SYNEVT)")
+    field(DISP, "1")
+}

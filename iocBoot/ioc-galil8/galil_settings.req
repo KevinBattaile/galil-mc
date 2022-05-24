@@ -1,0 +1,57 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-OP{Galil:8}
+
+# Motor record settings
+# Real motors
+
+# Slit MB Top
+file "motor_settings.req"       P=XF:19IDC-OP{Slt:MB-Ax:T}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Slt:MB-Ax:T}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Slt:MB-Ax:T}, M=Mtr
+
+# Slit MB Bottom
+file "motor_settings.req"       P=XF:19IDC-OP{Slt:MB-Ax:B}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Slt:MB-Ax:B}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Slt:MB-Ax:B}, M=Mtr
+
+# Slit MB Inboard
+file "motor_settings.req"       P=XF:19IDC-OP{Slt:MB-Ax:I}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Slt:MB-Ax:I}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Slt:MB-Ax:I}, M=Mtr
+
+# Slit MB Outboard
+file "motor_settings.req"       P=XF:19IDC-OP{Slt:MB-Ax:O}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Slt:MB-Ax:O}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Slt:MB-Ax:O}, M=Mtr
+
+# Slits
+
+# Slit MB Y Gap
+file "motor_settings.req"           P=XF:19IDC-OP{Slt:MB-Ax:YGap}, M=Mtr
+file "galil_motor_settings.req"     P=XF:19IDC-OP{Slt:MB-Ax:YGap}, M=Mtr
+file "galil_motor_extras.req"       P=XF:19IDC-OP{Slt:MB-Ax:YGap}, M=Mtr
+file "galil_forward_transform.req"  P=XF:19IDC-OP{Slt:MB-Ax:YGap}, M=Mtr
+file "galil_reverse_transforms.req" P=XF:19IDC-OP{Slt:MB-Ax:YGap}, M=Mtr
+
+# Slit MB Y Center
+file "motor_settings.req"           P=XF:19IDC-OP{Slt:MB-Ax:YCtr}, M=Mtr
+file "galil_motor_settings.req"     P=XF:19IDC-OP{Slt:MB-Ax:YCtr}, M=Mtr
+file "galil_motor_extras.req"       P=XF:19IDC-OP{Slt:MB-Ax:YCtr}, M=Mtr
+file "galil_forward_transform.req"  P=XF:19IDC-OP{Slt:MB-Ax:YCtr}, M=Mtr
+file "galil_reverse_transforms.req" P=XF:19IDC-OP{Slt:MB-Ax:YCtr}, M=Mtr
+
+# Slit MB X Gap
+file "motor_settings.req"           P=XF:19IDC-OP{Slt:MB-Ax:XGap}, M=Mtr
+file "galil_motor_settings.req"     P=XF:19IDC-OP{Slt:MB-Ax:XGap}, M=Mtr
+file "galil_motor_extras.req"       P=XF:19IDC-OP{Slt:MB-Ax:XGap}, M=Mtr
+file "galil_forward_transform.req"  P=XF:19IDC-OP{Slt:MB-Ax:XGap}, M=Mtr
+file "galil_reverse_transforms.req" P=XF:19IDC-OP{Slt:MB-Ax:XGap}, M=Mtr
+
+# Slit MB X Center
+file "motor_settings.req"           P=XF:19IDC-OP{Slt:MB-Ax:XCtr}, M=Mtr
+file "galil_motor_settings.req"     P=XF:19IDC-OP{Slt:MB-Ax:XCtr}, M=Mtr
+file "galil_motor_extras.req"       P=XF:19IDC-OP{Slt:MB-Ax:XCtr}, M=Mtr
+file "galil_forward_transform.req"  P=XF:19IDC-OP{Slt:MB-Ax:XCtr}, M=Mtr
+file "galil_reverse_transforms.req" P=XF:19IDC-OP{Slt:MB-Ax:XCtr}, M=Mtr
+
+

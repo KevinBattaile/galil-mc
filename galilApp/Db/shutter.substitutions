@@ -1,0 +1,12 @@
+file vectorPos.template {
+pattern
+{ NAME,   PARAM,       DESC,                        EGU,    PREC,  SCAN,       ABS,  MTR                   }
+{ "Opn",  "ShtOpPos",  "Shutter: Open position",    "deg",  "3",   "Passive",  "1",  "$(P){Sht:1-Ax:R}Mtr" }
+{ "Cls",  "ShtClPos",  "Shutter: Closed position",  "deg",  "3",   "Passive",  "1",  "$(P){Sht:1-Ax:R}Mtr" }
+}
+
+#file shutterCmd.template {
+#pattern
+#{ TOLERANCE,  MTR                   }
+#{ "1",        "$(P){Sht:1-Ax:R}Mtr" }
+#}

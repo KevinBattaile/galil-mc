@@ -1,0 +1,42 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-ES{Galil:3}
+
+# Motor record settings
+# Real motors
+
+# Beam Stop V
+file "motor_settings.req"       P=XF:19IDC-ES{BS:1-Ax:V}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{BS:1-Ax:V}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{BS:1-Ax:V}, M=Mtr
+
+# Beam Stop H
+file "motor_settings.req"       P=XF:19IDC-ES{BS:1-Ax:H}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{BS:1-Ax:H}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{BS:1-Ax:H}, M=Mtr
+
+# Beam Stop Z
+file "motor_settings.req"       P=XF:19IDC-ES{BS:1-Ax:Z}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{BS:1-Ax:Z}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{BS:1-Ax:Z}, M=Mtr
+
+# Slit Beam Def Bottom
+file "motor_settings.req"       P=XF:19IDC-ES{Slt:BD-Ax:B}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Slt:BD-Ax:B}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Slt:BD-Ax:B}, M=Mtr
+
+# Slit Beam Def Top
+file "motor_settings.req"       P=XF:19IDC-ES{Slt:BD-Ax:T}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Slt:BD-Ax:T}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Slt:BD-Ax:T}, M=Mtr
+
+# Slit Beam Def Inboard
+file "motor_settings.req"       P=XF:19IDC-ES{Slt:BD-Ax:I}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Slt:BD-Ax:I}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Slt:BD-Ax:I}, M=Mtr
+
+# Slit Beam Def Outboard
+file "motor_settings.req"       P=XF:19IDC-ES{Slt:BD-Ax:O}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-ES{Slt:BD-Ax:O}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-ES{Slt:BD-Ax:O}, M=Mtr
+
+

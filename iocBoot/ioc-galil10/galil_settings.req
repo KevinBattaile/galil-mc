@@ -1,0 +1,55 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-OP{Galil:10}
+
+# Motor record settings
+# Real motors
+
+# Mono C2 Perp
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Perp}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Perp}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Perp}, M=Mtr
+
+# Mono C2 Para
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Para}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Para}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Para}, M=Mtr
+
+# Mono C2 Pitch
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:P}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:P}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:P}, M=Mtr
+
+# Mono C2 Roll
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:R}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:R}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:R}, M=Mtr
+
+# Mono C2 Yaw
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Yaw}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Yaw}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Yaw}, M=Mtr
+
+# Mono C2 Bend 1
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Bnd1}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Bnd1}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Bnd1}, M=Mtr
+
+# Mono C2 Bend 2
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Bnd2}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Bnd2}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Bnd2}, M=Mtr
+
+# Mono C1 Bend
+file "motor_settings.req"       P=XF:19IDC-OP{Mono:DCM-Ax:Bnd}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-OP{Mono:DCM-Ax:Bnd}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-OP{Mono:DCM-Ax:Bnd}, M=Mtr
+
+# Temperatures
+
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:P}, R=GalilAi0
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:R}, R=GalilAi1
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:Para}, R=GalilAi2
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:Bnd2}, R=GalilAi3
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:Bnd}, R=GalilAi4
+file "galil_analog_in.req" P=XF:19IDC-OP{Mono:DCM-Ax:Yaw}, R=GalilAi5
+

@@ -1,0 +1,24 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P=XF:19IDC-TST{Galil:0}
+
+# Motor record settings
+# Real motors
+
+# Omega
+file "motor_settings.req"       P=XF:19IDC-TST{Gon:1-Ax:O}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-TST{Gon:1-Ax:O}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-TST{Gon:1-Ax:O}, M=Mtr
+
+# X
+file "motor_settings.req"       P=XF:19IDC-TST{Gon:1-Ax:X}, M=Mtr
+file "galil_motor_settings.req" P=XF:19IDC-TST{Gon:1-Ax:X}, M=Mtr
+file "galil_motor_extras.req"   P=XF:19IDC-TST{Gon:1-Ax:X}, M=Mtr
+
+# Temperatures
+
+file "galil_analog_in.req" P=XF:19IDC-OP{Test-Ax:E}, R=GalilAi4
+file "galil_analog_in.req" P=XF:19IDC-OP{Test-Ax:F}, R=GalilAi5
+# Digital Outputs
+
+file "galil_digital_out_bit.req" P=XF:19IDC-TST{Galil:0}, R=SHUT
+

@@ -1,0 +1,48 @@
+file vectorParam.template {
+pattern
+{ NAME,               PARAM,       DESC,                          EGU,   PREC,  SCAN,        RBV_ONLY }
+{ "Exposure",         "VExp",      "Vec: Sample Exposure"         "ms",  "3",   "Passive",   ""       }
+{ "NumSamples",       "VNumSamp",  "Vec: Number of Samples",      "",    "0",   "Passive",   ""       }
+{ "BufferTime",       "VBufTime",  "Vec: Buffer Time",            "ms",  "0",   "Passive",   ""       }
+{ "DataAcqDuration",  "VDaqDur",   "Vec: Data Acq Duration",      "ms",  "3",   "1 second",  "#"      }
+{ "ShutChgPos",       "VShtChgP",  "Vec: Shutter Change in Pos",  "ct",  "0",   "1 second",  "#"      }
+{ "ShutTime",         "VShtOTim",  "Vec: Shutter Open Time",      "ms",  "3",   "1 second",  ""       }
+{ "ShutLagTime",      "VShtLTim",  "Vec: Shutter Lag Time",       "ms",  "3",   "1 second",  ""       }
+{ "MaxTimeToSpeed",   "VMxTToSp",  "Vec: Max Time to Speed",      "ms",  "3",   "1 second",  "#"      }
+}
+
+file vectorBoolParamIn.template {
+pattern
+{ NAME,               PARAM,       DESC,            SCAN,       }
+{ "Sts:Running-Sts",  "VRunning",  "Vec: Running",  ".1 second" }
+}
+
+file vectorBoolParamOut.template {
+pattern
+{ NAME,               PARAM,       DESC                }
+{ "Expose-Sel",       "VExpose",   "Vec: Expose"       }
+{ "CalcOnly-Sel",     "VClcOnly",  "Vec: Calc Only"    }
+{ "Hold-Sel",         "VHold",     "Vec: Hold"         }
+{ "SetupGather-Sel",  "VGather",   "Vec: Setup Gather" }
+{ "Cmd:Go-Cmd",       "VGo",       "Vec: Go"           }
+{ "Cmd:Proceed-Cmd",  "VProceed",  "Vec: Proceed"      }
+{ "Cmd:Abort-Cmd",    "VAbort",    "Vec: Abort"        }
+}
+
+file vectorState.template {
+pattern
+{ NAME,             PARAM,     DESC,          SCAN        }
+{ "Sts:State-Sts",  "VState",  "Vec: State",  ".1 second" }
+}
+
+file vectorError.template {
+pattern
+{ NAME,             PARAM,     DESC,          SCAN        }
+{ "Sts:Error-Sts",  "VError",  "Vec: Error",  ".5 second" }
+}
+
+file sync.template {
+pattern
+{ NAME,            SYNEVT }
+{ "Cmd:Sync-Cmd",  "SYNC" }
+}

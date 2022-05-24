@@ -1,0 +1,33 @@
+file vectorPos.template {
+pattern
+{ NAME,          PARAM,            DESC,                    PREC,          ABS,  SCAN,       SYNEVT }
+{ "\$(M)Start",  "VStart[\$(N)]",  "Vec: Start \$(M) Pos",  "\$(PREC=3)",  "1",  "1 second", "SYNC" }
+{ "\$(M)End",    "VEnd[\$(N)]",    "Vec: End \$(M) Pos",    "\$(PREC=3)",  "1",  "1 second", "SYNC" }
+}
+
+file vectorBoolParamIn.template {
+pattern
+{ NAME,                    PARAM,              DESC,                   SCAN,      }
+{ "Sts:\$(M)TooFast-Sts",  "VTooFast[\$(N)]",  "Vec: \$(M) Too Fast",  "1 second" }
+}
+
+file vectorParam.template {
+pattern
+{ NAME,                 PARAM,              DESC,                          EGU,       PREC,  SCAN,        RBV_ONLY }
+{ "\$(M)Accel",         "VAccel[\$(N)]",    "Vec: \$(M) Acceleration",     "ct/ms2",  "3",   "1 second",  "#"      }
+{ "\$(M)DataAcqDist",   "VDaqDist[\$(N)]",  "Vec: \$(M) Data Acq Dist",    "ct",      "0",   "1 second",  "#"      }
+{ "\$(M)DesSpeed",      "VDesSpd[\$(N)]",   "Vec: \$(M) Desired Speed",    "ct/ms",   "3",   "1 second",  "#"      }
+{ "\$(M)TimeToSpeed",   "VTimToSp[\$(N)]",  "Vec: \$(M) Time to Speed",    "ms",      "3",   "1 second",  "#"      }
+{ "\$(M)Dir",           "VDir[\$(N)]",      "Vec: \$(M) Direction",        "",        "0",   "1 second",  "#"      }
+{ "\$(M)SpeedUpDist",   "VSpUpDst[\$(N)]",  "Vec: \$(M) Speed Up Dist",    "ct",      "0",   "1 second",  "#"      }
+{ "\$(M)BufferDist",    "VBufDst[\$(N)]",   "Vec: \$(M) Buffer Dist",      "ct",      "0",   "1 second",  "#"      }
+{ "\$(M)ShutOpenDist",  "VShtODst[\$(N)]",  "Vec: \$(M) Shut Open Dist",   "ct",      "0",   "1 second",  "#"      }
+{ "\$(M)BackUpDist",    "VBkUpDst[\$(N)]",  "Vec: \$(M) Backup Distance",  "ct",      "0",   "1 second",  "#"      }
+{ "\$(M)ShutLagDist",   "VShtLDst[\$(N)]",  "Vec: \$(M) Shut Lag Dist",    "ct",      "0",   "1 second",  "#"      }
+}
+
+file vectorCapt.template {
+pattern
+{ ADDR,    NAME,          NELM }
+{ "\$(N)", "VCaptM\$(N)", 4000 }
+}

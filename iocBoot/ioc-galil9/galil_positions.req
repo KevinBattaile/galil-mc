@@ -1,0 +1,12 @@
+# Motor record positions
+# Real motors
+
+# BPM 2 X
+XF:19IDC-OP{BPM:2-Ax:X}Mtr.DVAL
+
+# BPM 2 Y
+XF:19IDC-OP{BPM:2-Ax:Y}Mtr.DVAL
+
+# Mono Bragg
+XF:19IDC-OP{Mono:DCM-Ax:B}Mtr.DVAL
+

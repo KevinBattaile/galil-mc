@@ -1,0 +1,12 @@
+record(bo, "$(P)$(R)$(NAME)") {
+  field(DESC, "$(DESC=)")
+  field(OUT,  "_$(P)$(R)$(NAME) PP")
+  field(ZNAM, "$(ZNAM=No)")
+  field(ONAM, "$(ONAM=Yes)")
+}
+
+record(ao, "_$(P)$(R)$(NAME)") {
+  field(DTYP, "asynFloat64")
+  field(DESC, "$(DESC=)")
+  field(OUT,  "@asyn($(PORT),$(ADDR=0))USER_VAR $(PARAM)")
+}

@@ -1,0 +1,15 @@
+# Motor record positions
+# Real motors
+{% for a in axes.values() %}
+# {{ a['DESC'] }}
+{{ a['P'] }}Mtr.DVAL
+{% endfor -%}
+
+{% if slits %}
+# Slits
+{% for s in slits %}
+# {{ s['DESC'] }}
+{{ s['P'] }}Mtr.DVAL
+{% endfor -%}
+{% endif %}
+

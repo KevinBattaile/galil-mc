@@ -1,0 +1,54 @@
+record(ao, "$(P)$(R)Pos:$(NAME)-SP") {
+  field(DESC, "$(DESC=)")
+  field(FLNK, "$(P)$(R)Pos:$(NAME)-CO")
+  field(PREC, "$(PREC=)")
+  field(EGU,  "$(EGU=)")
+  info(autosaveFields_pass0, "VAL")
+  info(autosaveFields_pass1, "VAL")
+}
+
+record(calcout, "$(P)$(R)Pos:$(NAME)-CO") {
+  field(INPA, "$(P)$(R)Pos:$(NAME)-SP")
+  field(INPB, "$(MTR).OFF")
+  field(INPC, "$(MTR).MRES")
+  field(INPD, "$(MTR).DIR")
+  field(INPE, "$(ABS=1)")
+  field(CALC, "E ? (D ? (B-A)/C : (A-B)/C) : (D ? -A/C : A/C)")
+  field(OUT,  "$(P)$(R)Raw:$(NAME)-SP PP")
+}
+
+record(ao, "$(P)$(R)Raw:$(NAME)-SP") {
+  field(DTYP, "asynFloat64")
+  field(DESC, "$(DESC=)")
+  field(OUT,  "@asyn($(PORT),$(ADDR=0))USER_VAR $(PARAM)")
+  field(FLNK, "$(P)$(R)Raw:$(NAME)-I")
+}
+
+record(ai, "$(P)$(R)Raw:$(NAME)-I") {
+  field(DTYP, "asynFloat64")
+  field(DESC, "$(DESC=)")
+  field(INP,  "@asyn($(PORT),$(ADDR=0))USER_VAR $(PARAM)")
+  field(SCAN, "$(SCAN=Passive)")
+  field(FLNK, "$(P)$(R)Pos:$(NAME)-I")
+  field(PINI, "YES")
+}
+
+record(calc, "$(P)$(R)Pos:$(NAME)-I") {
+  field(DESC, "$(DESC=)")
+  field(INPA, "$(P)$(R)Raw:$(NAME)-I")
+  field(INPB, "$(MTR).OFF")
+  field(INPC, "$(MTR).MRES")
+  field(INPD, "$(MTR).DIR")
+  field(INPE, "$(ABS=1)")
+  field(CALC, "E ? (D ? -A*C+B : A*C+B) : D ? (-A*C : A*C)")
+  field(PREC, "$(PREC=)")
+  field(EGU,  "$(EGU=)")
+}
+
+record(ao, "$(P)$(R)Pos:$(NAME)-Sync") {
+  field(DOL,  "$(MTR).RBV")
+  field(OUT,  "$(P)$(R)Pos:$(NAME)-SP PP")
+  field(SCAN, "Event")
+  field(EVNT, "$(SYNEVT=)")
+  field(OMSL, "closed_loop")
+}

@@ -1,0 +1,39 @@
+# Controller settings that motorRecord does not support
+file "galil_dmc_ctrl.req" P={{ controller['P'] }}
+
+# Motor record settings
+# Real motors
+{% for a in axes.values() %}
+# {{ a['DESC'] }}
+file "motor_settings.req"       P={{ a['P'] }}, M=Mtr
+file "galil_motor_settings.req" P={{ a['P'] }}, M=Mtr
+file "galil_motor_extras.req"   P={{ a['P'] }}, M=Mtr
+{% endfor -%}
+
+{% if slits %}
+# Slits
+{% for s in slits %}
+# {{ s['DESC'] }}
+file "motor_settings.req"           P={{ s['P'] }}, M=Mtr
+file "galil_motor_settings.req"     P={{ s['P'] }}, M=Mtr
+file "galil_motor_extras.req"       P={{ s['P'] }}, M=Mtr
+file "galil_forward_transform.req"  P={{ s['P'] }}, M=Mtr
+file "galil_reverse_transforms.req" P={{ s['P'] }}, M=Mtr
+{% endfor -%}
+{% endif -%}
+
+{% if temps %}
+# Temperatures
+{% for t in temps.values() %}
+file "galil_analog_in.req" P={{ t['P'] }}, R={{ t['R'] }}
+{%- endfor -%}
+{% endif -%}
+
+{% if dig_outs %}
+# Digital Outputs
+{% for d in dig_outs.values() %}
+file "galil_digital_out_bit.req" P={{ controller['P'] }}, R={{ d['R'] }}
+{%- endfor -%}
+{% endif %}
+
+

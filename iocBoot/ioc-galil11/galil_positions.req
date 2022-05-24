@@ -1,0 +1,41 @@
+# Motor record positions
+# Real motors
+
+# BPM 1 X
+XF:19IDC-OP{BPM:1-Ax:X}Mtr.DVAL
+
+# BPM 1 Y
+XF:19IDC-OP{BPM:1-Ax:Y}Mtr.DVAL
+
+# Beam Mask X
+XF:19IDC-OP{BM:1-Ax:X}Mtr.DVAL
+
+# Beam Mask Y
+XF:19IDC-OP{BM:1-Ax:Y}Mtr.DVAL
+
+# Slit WB Inboard
+XF:19IDC-OP{Slt:WB-Ax:I}Mtr.DVAL
+
+# Slit WB Outboard
+XF:19IDC-OP{Slt:WB-Ax:O}Mtr.DVAL
+
+# Slit WB Top
+XF:19IDC-OP{Slt:WB-Ax:T}Mtr.DVAL
+
+# Slit WB Botom
+XF:19IDC-OP{Slt:WB-Ax:B}Mtr.DVAL
+
+# Slits
+
+# Slit WB X Gap
+XF:19IDC-OP{Slt:WB-Ax:XGap}Mtr.DVAL
+
+# Slit WB X Center
+XF:19IDC-OP{Slt:WB-Ax:XCtr}Mtr.DVAL
+
+# Slit WB Y Gap
+XF:19IDC-OP{Slt:WB-Ax:YGap}Mtr.DVAL
+
+# Slit WB Y Center
+XF:19IDC-OP{Slt:WB-Ax:YCtr}Mtr.DVAL
+
